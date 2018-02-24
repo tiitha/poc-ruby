@@ -21,17 +21,15 @@ def scan_folder()
 		position = 0
 
 		# when starting the script, set the positions to the end of the file (tail -f)
-		position = File.stat(fn).size if $initial == true
-		$sources.merge!({fn => position}) if not $sources.has_key?(fn)
+		position = File.stat(fn).size if $initial
+		$sources[fn] = position unless $sources.has_key?(fn)
 	}
 	$initial = false
 end
 
 def follow()
-	while true do
-
+	loop do
 		scan_folder()
-
 		$sources.each { |fn,p|
 			f = File.new(fn)
 			f.seek(p)
@@ -48,7 +46,6 @@ def follow()
 
 			$sources[fn] += i + Delim_len
 		}
-
 		sleep(0.1)	
 	end
 end
